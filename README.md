@@ -1,5 +1,8 @@
 # Whisky Loading Screen
 
+[![Discord Support](https://img.shields.io/badge/Discord-Get%20Support-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/CDgC3Zrvzu)
+[![WhiskyDevelopment Store](https://img.shields.io/badge/Tebex-Visit%20Store-202C42?style=for-the-badge)](https://whiskydevelopment.tebex.io)
+
 **A lightweight, customizable FiveM loading screen by WhiskyDevelopment.**
 
 Whisky Loading Screen combines a local MP4 playlist with real FiveM loading progress, a permanently displayed Discord staff team, and a separate roster of players currently in the server. The player roster can display framework character names, Discord guild nicknames, or FiveM player names.
@@ -252,5 +255,12 @@ When publishing through **Cfx Asset Escrow**, the Lua modules under `server/` ca
 - It does not use `backdrop-filter`, WebAssembly, or the YouTube iframe API.
 - Discord profile/avatar availability depends on the Discord API, your bot's access, and network connectivity.
 - You are responsible for using videos, audio, and logos you have the rights to distribute or display.
+
+## Support & Links
+
+Need help installing or configuring Whisky Loading Screen? Open a support request in the **WhiskyDevelopment Discord**. For this resource and other releases, visit the **WhiskyDevelopment Tebex store**.
+
+- **Discord Support:** https://discord.com/invite/CDgC3Zrvzu
+- **Tebex Store:** https://whiskydevelopment.tebex.io
 
 **Created by WhiskyDevelopment.**
