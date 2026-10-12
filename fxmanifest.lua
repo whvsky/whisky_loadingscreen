@@ -15,11 +15,6 @@ server_scripts {
     'server/handover.lua'
 }
 
-escrow_ignore {
-    'server_config.lua',
-    'html/staff_snapshot.js'
-}
-
 files {
     'html/index.html',
     'html/style.css',
