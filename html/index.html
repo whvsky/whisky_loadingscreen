@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loading</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <video id="background-video" class="background-video" autoplay playsinline preload="auto" aria-hidden="true"></video>
+
+    <!-- Server details are received through FiveM's native, server-side handover. -->
+    <header class="server-header" aria-label="Server information">
+        <div class="server-header-main">
+            <div class="server-overline">YOU'RE CONNECTING TO</div>
+            <div id="server-name" class="server-name">CONNECTING...</div>
+            <button type="button" id="player-counter" class="player-counter" aria-live="polite" aria-label="Show connected players" aria-expanded="false" aria-controls="online-roster" title="Show players currently in server" disabled>
+                <span class="player-count-dot" aria-hidden="true"></span>
+                <span id="player-count-text">CHECKING PLAYERS...</span>
+                <svg class="player-counter-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+        </div>
+        <section id="online-roster" class="online-roster" aria-label="Connected players" hidden>
+            <div class="online-roster-heading">
+                <span>CURRENTLY IN SERVER</span>
+                <span id="roster-source">CHARACTER NAMES</span>
+            </div>
+            <div id="online-roster-list" class="online-roster-list"></div>
+            <div class="online-roster-footer" id="online-roster-footer">Snapshot when you connected</div>
+        </section>
+        <button type="button" id="settings-toggle" class="settings-toggle" aria-label="Open loading screen settings" aria-expanded="false" aria-controls="settings-panel" title="Settings">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m12 2 1.6 1.9 2.45-.45.78 2.33 2.32.78-.44 2.44L20.6 12l-1.89 3 .44 2.44-2.32.78-.78 2.33-2.45-.45L12 22l-1.6-1.9-2.45.45-.78-2.33-2.32-.78.44-2.44L3.4 12l1.89-3-.44-2.44 2.32-.78.78-2.33 2.45.45L12 2Z" />
+                <circle cx="12" cy="12" r="3" />
+            </svg>
+        </button>
+        <section id="settings-panel" class="settings-panel" aria-label="Loading screen settings" hidden>
+            <div class="settings-heading">
+                <span>SETTINGS</span>
+                <button type="button" id="settings-close" class="settings-close" aria-label="Close settings" title="Close">×</button>
+            </div>
+            <label class="streamer-setting" for="streamer-toggle">
+                <span class="streamer-info">
+                    <strong>Streamer Mode</strong>
+                    <small>Mute audio and hide staff/player identities</small>
+                </span>
+                <input id="streamer-toggle" type="checkbox" role="switch" aria-label="Streamer Mode">
+                <span class="setting-switch" aria-hidden="true"></span>
+            </label>
+            <div class="settings-footnote">Saved on this client</div>
+        </section>
+    </header>
+
+    <main class="center-logo">
+        <img src="assets/logo.png" alt="Server logo" draggable="false">
+    </main>
+
+    <!-- Filled by the server-only Discord bot integration. -->
+    <aside id="staff-panel" class="staff-panel" aria-label="Server staff">
+        <div class="staff-heading">
+            <div class="staff-heading-marker" aria-hidden="true"></div>
+            <div>
+                <div class="staff-overline">MEET THE TEAM</div>
+                <div class="staff-title">SERVER STAFF</div>
+            </div>
+        </div>
+        <div id="staff-list" class="staff-list">
+            <!-- Always-visible fallback, before handover arrives. -->
+            <div class="staff-card">
+                <div class="staff-avatar"><span class="staff-avatar-initial">S</span></div>
+                <div class="staff-identity"><div class="staff-name">Staff Team</div><div class="staff-role">SERVER STAFF</div></div>
+                <span class="staff-card-dot" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="staff-footer">THE PEOPLE BEHIND THE SERVER</div>
+    </aside>
+
+    <section class="media-controls" role="group" aria-label="Loading screen media controls">
+        <div class="media-topline">
+            <span class="media-label" id="current-video-title">Now Playing</span>
+            <span class="media-counter" id="media-counter">1 / 1</span>
+        </div>
+        <div class="media-buttons">
+            <button type="button" id="previous-video" class="control-button" aria-label="Previous video" title="Previous video">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 5h2v14H5zM19 5v14L8.5 12 19 5z"/></svg>
+            </button>
+            <button type="button" id="toggle-play" class="control-button main-control" aria-label="Pause" title="Pause">
+                <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
+                <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><path d="M7 4v16l13-8L7 4z"/></svg>
+            </button>
+            <button type="button" id="next-video" class="control-button" aria-label="Next video" title="Next video">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 5h2v14h-2zM5 5v14l10.5-7L5 5z"/></svg>
+            </button>
+        </div>
+        <div class="media-volume">
+            <svg id="speaker-icon" width="18" height="18" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+                <path id="sound-wave-small" d="M15.5 9a4 4 0 0 1 0 6" />
+                <path id="sound-wave-large" d="M19 5a9 9 0 0 1 0 14" />
+                <path id="muted-line" d="m16 9 5 6m0-6-5 6" style="display:none" />
+            </svg>
+            <input id="volume-slider" type="range" min="0" max="100" value="35" step="1" aria-label="Video volume">
+            <span id="volume-value" class="volume-value">35%</span>
+        </div>
+        <div id="media-status" class="media-status" role="status" aria-live="polite" hidden></div>
+    </section>
+
+    <!-- FiveM's own loadProgress event drives this bar; no fake percentages. -->
+    <footer class="load-progress" aria-label="Loading progress">
+        <div class="progress-meta">
+            <span id="progress-status">CONNECTING TO SERVER</span>
+            <span id="progress-percent" class="progress-percent">—</span>
+        </div>
+        <div id="progress-track" class="progress-track" role="progressbar" aria-label="Game loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Waiting for loading updates">
+            <div id="progress-fill" class="progress-fill"></div>
+        </div>
+    </footer>
+
+    <script src="media_config.js"></script>
+    <script src="staff_snapshot.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

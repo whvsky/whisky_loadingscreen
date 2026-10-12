@@ -1,0 +1,2 @@
+/* Public server staff display data. No Discord IDs or bot token. */
+window.WhiskyStaffSnapshot = [{"name":"Whisky | 101","role":"OWNER","slot":1,"verified":true,"avatar":"https://cdn.discordapp.com/guilds/1512018349356355686/users/136100628064763905/avatars/a_ee32d22041cd78dd26893758e089e2b2.gif?size=128"},{"name":"Co-Owner","role":"CO-OWNER","slot":2,"verified":false},{"name":"Developer","role":"DEVELOPER","slot":3,"verified":false},{"name":"Management","role":"MANAGEMENT","slot":4,"verified":false}];

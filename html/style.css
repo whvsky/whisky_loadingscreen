@@ -1,0 +1,580 @@
+:root {
+    color-scheme: dark;
+    --text: #fff;
+    --fill: 35%;
+    --video-blur: 7px; /* Adjust this to change the video blur strength. */
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+
+body {
+    background: #0a0d13;
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.background-video {
+    position: fixed;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    /* Blur the video only; leaves the logo and volume slider crisp. */
+    filter: blur(var(--video-blur));
+    /* Prevent blurred edges from revealing the page background. */
+    transform: scale(1.04);
+    transform-origin: center;
+}
+
+.center-logo {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.center-logo img {
+    display: block;
+    width: min(76vw, 450px);
+    max-height: 68vh;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.34));
+}
+
+/* Bottom-center media controller. Never uses backdrop-filter. */
+.media-controls {
+    position: fixed;
+    bottom: 77px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(92vw, 300px);
+    padding: 12px 17px 13px;
+    border: 1px solid rgba(255,255,255,.17);
+    border-radius: 16px;
+    background: rgba(7,10,15,.85);
+    box-shadow: 0 12px 32px rgba(0,0,0,.25);
+    color: rgba(255,255,255,.94);
+    z-index: 10;
+}
+.media-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 9px;
+}
+.media-label {
+    min-width: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .15px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: rgba(255,255,255,.82);
+}
+.media-counter {
+    flex-shrink: 0;
+    color: rgba(255,255,255,.48);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+}
+.media-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 11px;
+}
+.control-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #eef0f6;
+    cursor: pointer;
+    transition: background-color .18s ease, color .18s ease;
+}
+.control-button:hover { background: rgba(255,255,255,.10); }
+.control-button:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+.control-button:disabled { opacity: .22; cursor: default; }
+.control-button.main-control {
+    background: rgba(255,255,255,.95);
+    color: #12151c;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+}
+.control-button.main-control:hover { background: #fff; }
+.control-button svg[hidden] { display: none !important; }
+.media-volume {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+    width: 100%;
+    color: rgba(255,255,255,.85);
+}
+.media-volume svg { flex-shrink: 0; }
+.media-volume input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 150px;
+    height: 18px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+}
+.media-volume input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: linear-gradient(to right, #f4f5f7 0%, #f4f5f7 var(--fill), rgba(255,255,255,.25) var(--fill), rgba(255,255,255,.25) 100%);
+    border-radius: 99px;
+}
+.media-volume input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    width: 12px;
+    margin-top: -4px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.12);
+}
+.media-volume input[type="range"]:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.volume-value { min-width: 36px; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.76); text-align: right; }
+.media-status[hidden] { display: none !important; }
+.media-status { color: rgba(255,255,255,.7); font-size: 10px; text-align: center; margin-top: 6px; }
+
+@media (max-width: 640px) {
+    .center-logo img { width: min(82vw, 380px); }
+    .media-controls { bottom: 70px; }
+}
+
+/* SERVER STAFF: fixed, minimalist right-side roster; never blurs the logo/UI. */
+/* The staff panel intentionally never hides, even when Discord or handover is unavailable. */
+.staff-panel {
+    position: fixed;
+    right: 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 318px;
+    max-height: calc(100vh - 115px);
+    padding: 22px 17px 14px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(11,14,21,.87), rgba(7,10,16,.77));
+    box-shadow: 0 18px 65px rgba(0,0,0,.40);
+    color: white;
+    z-index: 5;
+    overflow: hidden;
+    animation: roster-entrance .48s ease both;
+}
+@keyframes roster-entrance {
+    from { opacity: 0; transform: translateY(calc(-50% + 10px)); }
+    to { opacity: 1; transform: translateY(-50%); }
+}
+.staff-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 0 4px 19px;
+}
+.staff-heading-marker {
+    width: 3px;
+    height: 34px;
+    background: #f6f6fa;
+    border-radius: 6px;
+    flex: 0 0 auto;
+    box-shadow: 0 0 16px rgba(255,255,255,.30);
+}
+.staff-overline {
+    font-size: 10px;
+    color: rgba(255,255,255,.53);
+    letter-spacing: 2.4px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+.staff-title {
+    font-size: 19px;
+    letter-spacing: 1px;
+    font-weight: 800;
+    line-height: 1.08;
+}
+.staff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.staff-list::-webkit-scrollbar { width: 0; display: none; }
+.staff-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 11px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,.052);
+}
+.staff-avatar {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    position: relative;
+    border-radius: 10px;
+    background: linear-gradient(145deg,#353d4b,#171e29);
+    border: 1px solid rgba(255,255,255,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.staff-avatar-initial {
+    color: rgba(255,255,255,.8);
+    font-size: 18px;
+    font-weight: 800;
+}
+.staff-avatar img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+}
+.staff-identity { min-width: 0; flex: 1; }
+.staff-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fafbff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+.staff-role {
+    margin-top: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    color: rgba(255,255,255,.53);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.staff-card-dot {
+    flex: 0 0 5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.72);
+    box-shadow: 0 0 10px rgba(255,255,255,.22);
+}
+.staff-footer {
+    margin-top: 16px;
+    text-align: center;
+    color: rgba(255,255,255,.36);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    font-size: 9px;
+}
+@media (max-width: 1100px) {
+    .staff-panel { right: 16px; width: 272px; padding: 18px 13px 12px; }
+    .staff-card { gap: 9px; }
+}
+@media (max-width: 780px) {
+    .staff-panel { top: 16px; transform: none; right: 16px; width: min(260px, 41vw); max-height: calc(100vh - 110px); }
+    .staff-panel .staff-heading { margin-bottom: 12px; }
+    .staff-list { max-height: calc(100vh - 230px); }
+    .staff-card { min-height: 55px; padding: 6px; }
+    .staff-avatar { width: 38px; height: 38px; flex-basis: 38px; }
+    .staff-name { font-size: 12px; }
+    .staff-role { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .staff-panel { animation: none; }
+}
+
+
+/* v1.6 - FiveM status, real progress, and saved Streamer Mode settings. */
+.server-header {
+    position: fixed;
+    top: 28px;
+    left: 34px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    z-index: 20;
+    max-width: calc(100vw - 405px);
+    color: #fff;
+}
+.server-header-main { min-width: 0; padding-top: 3px; }
+.server-overline {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
+    color: rgba(255,255,255,.61);
+    margin-bottom: 7px;
+}
+.server-name {
+    font-size: clamp(18px, 2.2vw, 27px);
+    font-weight: 800;
+    letter-spacing: .25px;
+    line-height: 1.2;
+    max-width: 490px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 3px 15px rgba(0,0,0,.4);
+}
+.player-counter[hidden] { display: none !important; }
+.player-counter {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 7px;
+    background: rgba(6,10,16,.68);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,.82);
+}
+.player-count-dot {
+    display: inline-block;
+    background: #a7f3d0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    box-shadow: 0 0 7px rgba(167,243,208,.6);
+}
+.settings-toggle {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    background: rgba(7,10,15,.78);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    padding: 0;
+    line-height: 0;
+    text-align: center;
+    color: rgba(255,255,255,.9);
+    cursor: pointer;
+}
+.settings-toggle svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    margin: 0;
+}
+.settings-toggle:hover, .settings-toggle[aria-expanded="true"] { background: rgba(45,51,64,.94); }
+.settings-toggle:focus-visible, .settings-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.settings-panel[hidden] { display: none !important; }
+.settings-panel {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 16px);
+    z-index: 30;
+    background: rgba(8,12,20,.97);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 13px;
+    box-shadow: 0 24px 45px rgba(0,0,0,.45);
+    width: min(330px, calc(100vw - 48px));
+    padding: 15px;
+}
+.settings-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,.76);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+}
+.settings-close {
+    border: 0;
+    background: transparent;
+    color: rgba(255,255,255,.68);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+.streamer-setting {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 39px;
+    align-items: center;
+    column-gap: 12px;
+    min-height: 72px;
+    cursor: pointer;
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,255,255,.075);
+    padding: 13px;
+    border-radius: 10px;
+}
+.streamer-info { min-width: 0; }
+.streamer-info strong { display: block; font-size: 13px; margin-bottom: 5px; }
+.streamer-info small { display: block; line-height: 1.4; font-size: 10px; color: rgba(255,255,255,.54); max-width: 212px; }
+.streamer-setting input[type="checkbox"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.setting-switch {
+    display: inline-block;
+    width: 39px;
+    height: 23px;
+    background: rgba(255,255,255,.25);
+    border-radius: 100px;
+    flex: 0 0 39px;
+    position: relative;
+    align-self: center;
+    justify-self: center;
+    margin: 0;
+    transition: background-color .16s ease;
+}
+.setting-switch:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translateY(-50%);
+    transition: transform .16s ease;
+}
+.streamer-setting input[type="checkbox"]:checked + .setting-switch { background: #30a879; }
+.streamer-setting input[type="checkbox"]:checked + .setting-switch:after { transform: translate(16px, -50%); }
+.streamer-setting input[type="checkbox"]:focus-visible + .setting-switch { outline: 2px solid #fff; outline-offset: 3px; }
+.settings-footnote { margin-top: 12px; font-size: 10px; text-align: center; color: rgba(255,255,255,.43); }
+.streamer-mode .staff-avatar { background: linear-gradient(145deg,#343b46,#12151c); }
+.streamer-mode .media-volume input[type="range"] { opacity: .4; cursor: not-allowed; }
+.streamer-mode .media-volume .volume-value { min-width: 44px; }
+
+.load-progress {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10px 34px 19px;
+    z-index: 12;
+    color: #fff;
+    background: linear-gradient(0deg, rgba(5,8,13,.87) 0%, rgba(5,8,13,.3) 84%, transparent 100%);
+}
+.progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.65px;
+    color: rgba(255,255,255,.75);
+    margin-bottom: 8px;
+}
+.progress-percent { font-size: 12px; color: white; font-variant-numeric: tabular-nums; }
+.progress-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.18);
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #f3f5fc;
+    border-radius: inherit;
+    box-shadow: 0 0 12px rgba(255,255,255,.35);
+    transition: width .18s linear;
+}
+@media (max-width: 1100px) {
+    .server-header { max-width: calc(100vw - 320px); left: 18px; }
+    .load-progress { padding-left: 18px; padding-right: 18px; }
+}
+@media (max-width: 780px) {
+    .server-header { top: 13px; left: 14px; max-width: 50vw; gap: 8px; }
+    .server-name { font-size: 15px; max-width: 30vw; }
+    .server-overline { font-size: 8px; letter-spacing: 1.2px; }
+    .settings-toggle { width: 34px; height: 34px; flex-basis: 34px; }
+    .player-counter { font-size: 8px; letter-spacing: .4px; padding: 6px; }
+    .load-progress { padding-left: 14px; padding-right: 14px; padding-bottom: 12px; }
+    .media-controls { bottom: 62px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .progress-fill, .setting-switch, .setting-switch:after { transition: none; }
+}
+
+/* v1.7 - The counter is visible while FiveM's real population arrives. */
+.player-counter:not(.is-ready) .player-count-dot {
+    background: rgba(255,255,255,.4);
+    box-shadow: none;
+}
+
+
+/* v1.8: Real online player roster, toggled via the population counter. */
+.player-counter { cursor: pointer; font-family: inherit; text-align: left; transition: background .18s ease; }
+.player-counter:disabled { cursor: default; }
+.player-counter:not(:disabled):hover, .player-counter[aria-expanded="true"] { background: rgba(25,32,44,.91); }
+.player-counter:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.player-counter-arrow { transition: transform .18s ease; opacity: .67; }
+.player-counter[aria-expanded="true"] .player-counter-arrow { transform: rotate(180deg); }
+.player-counter:disabled .player-counter-arrow { opacity: .25; }
+.online-roster[hidden] { display: none !important; }
+.online-roster {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 13px);
+    width: min(300px, calc(100vw - 35px));
+    max-height: min(470px, calc(100vh - 190px));
+    display: flex;
+    flex-direction: column;
+    padding: 14px 12px 10px;
+    background: rgba(8,12,20,.95);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 13px;
+    box-shadow: 0 16px 45px rgba(0,0,0,.43);
+    z-index: 21;
+    animation: roster-slide-in .18s ease;
+}
+@keyframes roster-slide-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.online-roster-heading { display: flex; gap: 10px; justify-content: space-between; align-items: baseline; padding: 1px 4px 11px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.online-roster-heading span:first-child { font-size: 11px; font-weight: 800; letter-spacing: 1.3px; }
+.online-roster-heading span:last-child { font-size: 8px; font-weight: 700; text-align: right; color: rgba(255,255,255,.46); letter-spacing: .5px; }
+.online-roster-list { overflow-y: auto; min-height: 0; scrollbar-color: rgba(255,255,255,.24) transparent; scrollbar-width: thin; padding-top: 8px; }
+.online-player-row { display: flex; align-items: center; gap: 9px; padding: 8px 7px; border-radius: 7px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.online-player-row:hover { background: rgba(255,255,255,.065); }
+.online-player-dot { width: 6px; height: 6px; background: #8fe7b5; border-radius: 100%; flex-shrink: 0; }
+.online-player-name { min-width: 0; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; }
+.online-player-id { color: rgba(255,255,255,.42); font-size: 10px; font-variant-numeric: tabular-nums; }
+.online-roster-empty { font-size: 12px; padding: 17px 8px; color: rgba(255,255,255,.65); }
+.online-roster-footer { padding: 12px 4px 2px; font-size: 9px; color: rgba(255,255,255,.44); border-top: 1px solid rgba(255,255,255,.1); margin-top: 8px; text-align: center; }
+@media (max-width: 780px) {
+    .online-roster { width: min(260px, calc(100vw - 25px)); max-height: min(320px, calc(100vh - 150px)); }
+    .online-roster-heading span:first-child { font-size: 10px; letter-spacing: .3px; }
+}
+@media (prefers-reduced-motion: reduce) { .online-roster, .player-counter-arrow { animation: none; transition: none; } }
